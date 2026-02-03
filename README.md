@@ -1,73 +1,56 @@
-# React + TypeScript + Vite
+Metropolis Arena - Interactive Seating Map
+This is a high-performance React + TypeScript application built for the Metropolis Arena. It renders a complex event seating map with 15,000+ seats while maintaining a smooth 60 FPS experience.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🚀 Getting Started
+Install dependencies:
 
-## React Compiler
+Bash
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+pnpm install
+Run the development server:
 
-## Expanding the ESLint configuration
+Bash
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+pnpm dev
+The app will be available at http://localhost:5173.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+🏗️ Architecture & Trade-offs
+High-Performance Rendering (Canvas API)
+To meet the requirement of 60 FPS with 15,000 seats, I chose HTML5 Canvas for the primary rendering layer. Standard React DOM nodes (15,000 div or button elements) would cause significant reconciliation lag and memory overhead. By using a single Canvas element, the application remains lightweight and responsive.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Accessibility & Interactivity (Hybrid SVG Overlay)
+To ensure full accessibility (WCAG 2.1), I implemented a transparent SVG overlay. While the Canvas handles the visuals, the SVG contains focusable, invisible elements with proper aria-labels. This allows users to navigate seats using a keyboard (Tab and Enter) while screen readers can identify the section, row, and seat number.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+
+
+
+
+State Management & Persistence
+The application uses local React state for the "shopping cart" of seats (limited to 8). To ensure a seamless user experience, the selection is persisted in localStorage, allowing the user to refresh the page without losing their chosen seats.
+
+
+
+✅ Features
+
+Smooth 60 FPS Rendering: Optimized for large-scale arenas.
+
+
+Accessibility: Full keyboard support and ARIA labels for every seat.
+
+
+Live Summary: Real-time subtotal calculation for up to 8 selected seats.
+
+
+Responsive Design: Works across desktop and mobile viewports.
+
+🛠️ TODOs / Incomplete Features
+
+Pinch-Zoom: Currently, the map uses a standard scroll/pan; native touch gestures for mobile could be improved.
+
+
+WebSockets: The infrastructure is ready for live seat status updates (Available/Sold), which would be the next logical step.
